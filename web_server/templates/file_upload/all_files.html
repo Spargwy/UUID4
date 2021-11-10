@@ -9,6 +9,6 @@
 
 {% block content %}
   {% for file in files %}
-    <a href="{{ file.name }} " download>{{ file.source_name }}</a>
+    <a href="files/{{ file.name }} " download>{{ file.source_name }}</a>
   {% endfor %}
 {% endblock %}
