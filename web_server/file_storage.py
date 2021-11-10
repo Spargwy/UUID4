@@ -4,6 +4,7 @@ import uuid
 from flask import session, g, render_template, Blueprint, url_for, request, flash, current_app, send_from_directory
 from flask import redirect
 
+from web_server.aut import login_required
 from web_server.models import Users, File, db
 
 bp = Blueprint("file_storage", __name__)
@@ -16,14 +17,8 @@ def allowed_file(filename):
 
 
 @bp.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload_file():
-    user_id = session.get("user_id")
-    if user_id is None:
-        g.user = None
-        return redirect(url_for("auth.login"))
-    else:
-        g.user = Users.query.filter_by(id=user_id).first()
-
     if request.method == "POST":
         accessibility = request.form['accessibility']
         if accessibility is None:
@@ -77,13 +72,7 @@ def file_from_link(filename):
 
 
 @bp.route('/my-files')
+@login_required
 def privat_files():
-    user_id = session.get("user_id")
-    if user_id is None:
-        g.user = None
-        return redirect(url_for("auth.login"))
-    else:
-        g.user = Users.query.filter_by(id=user_id).first()
-
-    files = File.query.filter((File.user_id == user_id))
+    files = File.query.filter((File.user_id == g.user.user_id))
     return render_template('file_upload/all_files.html', files=files)

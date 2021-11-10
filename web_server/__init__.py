@@ -1,8 +1,10 @@
 import os
 
-from flask import Flask, g
+from flask import Flask
 from flask.cli import load_dotenv
 from flask_migrate import Migrate
+
+from web_server.models import Users
 
 
 def create_app(test_config=None):
@@ -20,8 +22,16 @@ def create_app(test_config=None):
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
     else:
+        from web_server.models import db
         app.config.from_mapping(test_config)
-
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('TEST_DB_URL')
+        db.init_app(app)
+        with app.app_context():
+            db.create_all()
+            user = Users("test", "test",
+                         'pbkdf2:sha256:50000$TCI4GzcX$0de171a4f4dac32e3364c7ddc7c14f3e2fa61f2d17574483f7ffbb431b4acb2f')
+            db.session.add(user)
+            db.session.commit()
     try:
         os.makedirs(app.instance_path)
     except OSError:
