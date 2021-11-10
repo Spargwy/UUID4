@@ -3,6 +3,7 @@ import uuid
 
 from flask import session, g, render_template, Blueprint, url_for, request, flash, current_app, send_from_directory
 from flask import redirect
+from sqlalchemy import desc
 
 from web_server.aut import login_required
 from web_server.models import Users, File, db
@@ -61,13 +62,16 @@ def public_files():
     if user_id is None:
         g.user = None
     else:
-        g.user = Users.query.filter_by(id=user_id).first()
-    files = File.query.filter((File.accessibility == "open"))
+        g.user = Users.query.filter_by(id=user_id)
+    files = File.query.filter((File.accessibility == "open")).order_by(desc(File.downloads))
     return render_template('file_upload/all_files.html', files=files)
 
 
 @bp.route('/files/<filename>')
 def file_from_link(filename):
+    file = File.query.filter_by(name=filename).first()
+    file.downloads += 1
+    db.session.commit()
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
 
 

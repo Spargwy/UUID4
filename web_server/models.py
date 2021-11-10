@@ -22,9 +22,11 @@ class File(db.Model):
     name = db.Column(db.String, unique=True, index=True)
     source_name = db.Column(db.String)
     accessibility = db.Column(db.String)
+    downloads = db.Column(db.Integer)
 
     def __init__(self, user_id, name, source_name, accessibility):
         self.user_id = user_id
         self.name = name
         self.source_name = source_name
         self.accessibility = accessibility
+        self.downloads = 0
