@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Files{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('file_storage.upload_file') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for file in files %}
+    <a href="{{ file.name }} " download>{{ file.source_name }}</a>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,17 @@
+<!doctype html>
+<title>Upload new File</title>
+{% if error %}
+    <h3>wrong file extension</h3>
+{% endif %}
+<h1>Upload new File</h1>
+<form method=post enctype=multipart/form-data>
+  <input type=file name=file>
+  <label for="accessibility">Choose degree of accessibility:</label>
+  <select name="accessibility" id="accessibility">
+    <option value="open">Open for all</option>
+    <option value="link">Access from link</option>
+    <option value="confidential">Only for me</option>
+  </select>
+    <input type=submit value=Upload>
+</form>
+
